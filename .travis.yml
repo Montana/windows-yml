@@ -26,8 +26,7 @@
       after_success:
         - deactivate
 
-# https://docs.travis-ci.com/user/reference/windows/#windows-version
-    - name: "Windows Server, version 1809"
+- name: "Windows Server, version 1809"
       os: windows
       language: shell
       env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
