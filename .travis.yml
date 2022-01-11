@@ -1,4 +1,17 @@
- os: windows
+---
+fleet_script_tasks : &fleet_script_tasks
+      script:
+        - python --version
+fleet_install_tasks : &fleet_install_tasks
+      install:
+        - pip install -r requirements.txt
+
+matrix:
+  fast_finish: true
+  include:
+
+    - name: "Python 3.8 on Windows"
+      os: windows
       language: shell
       env:
         - PATH=/c/Python38:/c/Python38/Scripts:$PATH
@@ -9,5 +22,39 @@
         - source $HOME/venv/Scripts/activate
       <<: *fleet_install_tasks
       <<: *fleet_script_tasks
+      after_success:
+        - deactivate
+
+    - name: "Python 3.7 on Windows"
+      os: windows
+      language: shell
+      env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
+      before_install:
+        - choco install python --version 3.7.3
+        - python -m pip install virtualenv
+        - virtualenv $HOME/venv
+        - source $HOME/venv/Scripts/activate
+      <<: *fleet_install_tasks
+      <<: *fleet_script_tasks
+      after_success:
+        - deactivate
+
+# https://docs.travis-ci.com/user/reference/windows/#windows-version
+    - name: "Windows Server, version 1809"
+      os: windows
+      language: shell
+      env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
+      before_install:
+        - choco install python --version 3.7.3
+        - python -m pip install virtualenv
+        - virtualenv $HOME/venv
+        - source $HOME/venv/Scripts/activate
+      script:
+        - systeminfo  
+        - wmic OS get OSArchitecture
+        - wmic process list full
+        - tasklist 
+        - net start 
+        - sc query  
       after_success:
         - deactivate
